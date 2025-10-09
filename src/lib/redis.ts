@@ -1,6 +1,6 @@
 import type { FastifyInstance } from "fastify";
 import RedisPkg from "ioredis";
-import { env } from "../env.ts";
+import { env } from "@/env.ts";
 
 const Redis = RedisPkg.default;
 
@@ -14,8 +14,8 @@ export const redis = new Redis({
 export async function connectRedis(app: FastifyInstance) {
   try {
     await redis.connect();
-    app.log.info("Redis connected");
+    app.log.info("Conexão com Redis OK.");
   } catch (error) {
-    app.log.error(`Failed to connect Redis: ${error}`);
+    app.log.error(`Falha o conectar com o Redis: ${error}`);
   }
 }

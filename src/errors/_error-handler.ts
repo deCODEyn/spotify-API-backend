@@ -1,8 +1,8 @@
 import type { FastifyInstance } from "fastify";
 import { ZodError } from "zod";
-import { BadRequestError } from "./errors/bad-request-error.ts";
-import { NotFoundError } from "./errors/not-found-error.ts";
-import { UnauthorizedError } from "./errors/unauthorized-error.ts";
+import { BadRequestError } from "./bad-request-error.ts";
+import { NotFoundError } from "./not-found-error.ts";
+import { UnauthorizedError } from "./unauthorized-error.ts";
 
 type fastifyErrorHandler = FastifyInstance["errorHandler"];
 

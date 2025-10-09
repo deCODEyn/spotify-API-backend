@@ -9,8 +9,8 @@ import {
   validatorCompiler,
   type ZodTypeProvider,
 } from "fastify-type-provider-zod";
+import { errorHandler } from "@/errors/_error-handler.ts";
 import { env } from "./env.ts";
-import { errorHandler } from "./error-handler.ts";
 import { connectRedis } from "./lib/redis.ts";
 import { appRoutes } from "./routes/app-routes.ts";
 
