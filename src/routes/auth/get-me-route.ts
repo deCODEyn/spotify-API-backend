@@ -1,23 +1,24 @@
 import type { FastifyInstance } from "fastify";
 import type { ZodTypeProvider } from "fastify-type-provider-zod";
-import z from "zod";
-import { UnauthorizedError } from "@/errors/unauthorized-error.ts";
-import { getUserId } from "@/middleware/get-user-id.ts";
-import { getUserFromRedis } from "@/service/auth-service.ts";
+import { z } from "zod";
+import { UnauthorizedError } from "../../errors/unauthorized-error.ts";
+import { getUserId } from "../../middleware/get-user-id.ts";
+import { getUserFromRedis } from "../../service/auth-service.ts";
 
 export function getMeRoute(app: FastifyInstance) {
   app
     .withTypeProvider<ZodTypeProvider>()
     .register(getUserId)
     .get(
-      "/me",
+      "/auth/me",
       {
         schema: {
           summary: "Retorna dados de usuário",
           tags: ["Auth"],
+          security: [{ bearerAuth: [] }],
           response: {
             200: z.object({
-              userId: z.string(),
+              id: z.string(),
               display_name: z.string().nullable().optional(),
               email: z.email().nullable().optional(),
             }),

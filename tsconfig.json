@@ -12,9 +12,7 @@
     "skipLibCheck": true,
     "moduleResolution": "node16",
     "strictNullChecks": true,
-    "resolveJsonModule": true,
-    "baseUrl": ".",
-    "paths": { "@/*": ["./src/*"] }
+    "resolveJsonModule": true
   },
   "include": ["src"]
 }

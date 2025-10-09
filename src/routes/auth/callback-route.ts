@@ -1,13 +1,14 @@
 import type { FastifyInstance } from "fastify";
 import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import { z } from "zod";
-import { BadRequestError } from "@/errors/bad-request-error.ts";
-import { UnauthorizedError } from "@/errors/unauthorized-error.ts";
+
+import { BadRequestError } from "../../errors/bad-request-error.ts";
+import { UnauthorizedError } from "../../errors/unauthorized-error.ts";
 import {
   exchangeCodeForToken,
   getSpotifyUser,
   saveTokensAndUser,
-} from "@/service/auth-service.ts";
+} from "../../service/auth-service.ts";
 
 export function callbackRoute(app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().post(
@@ -37,7 +38,7 @@ export function callbackRoute(app: FastifyInstance) {
         await saveTokensAndUser(spotifyUser, spotifyTokens);
 
         const jwtToken = await reply.jwtSign(
-          { sub: spotifyUser.userId },
+          { sub: spotifyUser.id },
           { sign: { expiresIn: "1d" } }
         );
 

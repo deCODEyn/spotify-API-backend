@@ -1,6 +1,6 @@
 import type { FastifyInstance } from "fastify";
 import RedisPkg from "ioredis";
-import { env } from "@/env.ts";
+import { env } from "../env.ts";
 
 const Redis = RedisPkg.default;
 

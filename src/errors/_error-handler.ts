@@ -1,6 +1,7 @@
 import type { FastifyInstance } from "fastify";
 import { ZodError } from "zod";
 import { BadRequestError } from "./bad-request-error.ts";
+import { ForbiddenError } from "./forbidden-error.ts";
 import { NotFoundError } from "./not-found-error.ts";
 import { UnauthorizedError } from "./unauthorized-error.ts";
 
@@ -20,6 +21,10 @@ export const errorHandler: fastifyErrorHandler = (error, _request, reply) => {
 
   if (error instanceof UnauthorizedError) {
     return reply.status(401).send({ message: error.message });
+  }
+
+  if (error instanceof ForbiddenError) {
+    return reply.status(403).send({ message: error.message });
   }
 
   if (error instanceof NotFoundError) {
