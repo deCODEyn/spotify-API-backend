@@ -1,24 +1,15 @@
-import { z } from "zod";
-import { env } from "../env.ts";
-import { BadRequestError } from "../errors/bad-request-error.ts";
-import { UnauthorizedError } from "../errors/unauthorized-error.ts";
-import { redis } from "../lib/redis.ts";
+import { env } from "@/env.ts";
+import { BadRequestError } from "@/errors/bad-request-error.ts";
+import { UnauthorizedError } from "@/errors/unauthorized-error.ts";
+import { redis } from "@/lib/redis.ts";
+import {
+  type TokenSchema,
+  tokenSchema,
+  type UserSchema,
+  userSchema,
+} from "@/schemas/auth-schemas.ts";
 
 const TOKEN_PREFIX = "spotify:tokens:";
-
-const tokenSchema = z.object({
-  access_token: z.string(),
-  refresh_token: z.string(),
-  expires_in: z.number(),
-});
-type TokenSchema = z.infer<typeof tokenSchema>;
-
-const userSchema = z.object({
-  userId: z.string(),
-  display_name: z.string().nullable().optional(),
-  email: z.string().nullable().optional(),
-});
-type UserSchema = z.infer<typeof userSchema>;
 
 export async function exchangeCodeForToken(code: string) {
   const basic = Buffer.from(
@@ -40,7 +31,7 @@ export async function exchangeCodeForToken(code: string) {
   });
 
   if (!response.ok) {
-    throw new UnauthorizedError("Failed to exchange code for token");
+    throw new UnauthorizedError("Falha ao trocar 'code' por token.");
   }
 
   const data = await response.json();
@@ -58,7 +49,7 @@ export async function getSpotifyUser(accessToken: string) {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
   if (!response.ok) {
-    throw new BadRequestError("Failed to fetch Spotify user");
+    throw new BadRequestError("Falha ao buscar usuário do Spotify.");
   }
   const data = await response.json();
   const user = userSchema.parse(data);
@@ -86,4 +77,14 @@ export async function saveTokensAndUser(user: UserSchema, tokens: TokenSchema) {
     "EX",
     tokens.expires_in + 60
   );
+}
+
+export async function getUserFromRedis(userId: string) {
+  const data = await redis.get(`${TOKEN_PREFIX}${userId}`);
+  if (!data) {
+    throw new UnauthorizedError("Usuário não localizado.");
+  }
+  const parsed = JSON.parse(data);
+  const user = userSchema.parse(parsed);
+  return user;
 }

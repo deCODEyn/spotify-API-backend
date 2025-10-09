@@ -1,7 +1,7 @@
 import type { FastifyInstance } from "fastify";
 import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import { z } from "zod";
-import { env } from "../env.ts";
+import { env } from "@/env.ts";
 
 export function authRoute(app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().get(

@@ -1,20 +1,21 @@
 import type { FastifyInstance } from "fastify";
 import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import { z } from "zod";
-import { BadRequestError } from "../errors/bad-request-error.ts";
-import { UnauthorizedError } from "../errors/unauthorized-error.ts";
+import { BadRequestError } from "@/errors/bad-request-error.ts";
+import { UnauthorizedError } from "@/errors/unauthorized-error.ts";
 import {
   exchangeCodeForToken,
   getSpotifyUser,
   saveTokensAndUser,
-} from "../service/auth-service.ts";
+} from "@/service/auth-service.ts";
 
-export function callbackAuth(app: FastifyInstance) {
+export function callbackRoute(app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().post(
     "/auth/callback",
     {
       schema: {
-        summary: "Recebe code spotify e converte em token de autenticação.",
+        summary:
+          "Recebe o 'code' do spotify e converte em token de autenticação.",
         tags: ["Auth"],
         querystring: z.object({ code: z.string() }),
         response: {
@@ -27,7 +28,7 @@ export function callbackAuth(app: FastifyInstance) {
     async (request, reply) => {
       const { code } = request.query;
       if (!code) {
-        throw new BadRequestError("Validação do spotify não localizada");
+        throw new BadRequestError("Parâmetro 'code' é obrigatório.");
       }
 
       try {
@@ -42,8 +43,11 @@ export function callbackAuth(app: FastifyInstance) {
 
         return reply.status(201).send({ jwtToken });
       } catch (error) {
-        app.log.error(error);
-        throw new UnauthorizedError("Falha na autenticação com Spotify");
+        app.log.error(
+          { err: error },
+          "Falha na busca do access_token do Spotify."
+        );
+        throw new UnauthorizedError("Falha na autenticação com Spotify.");
       }
     }
   );
