@@ -1,4 +1,5 @@
 import type { FastifyInstance } from "fastify";
+import { getTopArtistsRoute } from "./artists/get-top-artists-route.ts";
 import { authRoute } from "./auth/auth-route.ts";
 import { callbackRoute } from "./auth/callback-route.ts";
 import { getMeRoute } from "./auth/get-me-route.ts";
@@ -13,6 +14,8 @@ export function appRoutes(app: FastifyInstance) {
       routes.register(callbackRoute);
       routes.register(getMeRoute);
       routes.register(refreshRoute);
+
+      routes.register(getTopArtistsRoute);
     },
     { prefix: "/api" }
   );

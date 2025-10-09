@@ -35,7 +35,10 @@ export function refreshRoute(app: FastifyInstance) {
 
           return reply.status(200).send({ jwtToken });
         } catch (error) {
-          app.log.error(error);
+          app.log.error(
+            { err: error },
+            "Falha ao fazer o refresh_token do usuário."
+          );
           throw new UnauthorizedError("Falha ao atualizar o token.");
         }
       }

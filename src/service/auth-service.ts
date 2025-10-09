@@ -1,3 +1,4 @@
+import { BASIC, TOKEN_PREFIX } from "../constants/index.ts";
 import { env } from "../env.ts";
 import { BadRequestError } from "../errors/bad-request-error.ts";
 import { ForbiddenError } from "../errors/forbidden-error.ts";
@@ -10,11 +11,6 @@ import {
   type UserSchema,
   userSchema,
 } from "../schemas/auth-schemas.ts";
-
-const TOKEN_PREFIX = "spotify:tokens:";
-const BASIC = Buffer.from(
-  `${env.SPOTIFY_CLIENT_ID}:${env.SPOTIFY_CLIENT_SECRET}`
-).toString("base64");
 
 /**
  * Troca o code retornado pelo Spotify por tokens.

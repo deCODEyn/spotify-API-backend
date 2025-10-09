@@ -34,7 +34,7 @@ export function getMeRoute(app: FastifyInstance) {
         } catch (error) {
           app.log.error(
             { err: error },
-            "Falha ao buscar dados do usuário no Redis"
+            "Falha ao buscar dados do usuário no Redis."
           );
           throw new UnauthorizedError("Usuário não autenticado.");
         }
