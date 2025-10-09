@@ -1,0 +1,14 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: spotify-backend-dev
+    env_file:
+      - .env
+    ports:
+      - "${PORT:-3333}:${PORT:-3333}"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run dev

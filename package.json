@@ -1,0 +1,24 @@
+{
+	"name": "spotify-API-backend",
+	"version": "1.0.0",
+	"main": "index.js",
+	"type": "module",
+	"scripts": {
+		"start": "node --env-file .env --experimental-strip-types --no-warnings src/server.ts",
+		"dev": "node --env-file .env --experimental-strip-types --no-warnings --watch src/server.ts"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.2.5",
+		"@types/node": "^24.7.0",
+		"typescript": "^5.9.3",
+		"ultracite": "^5.6.1"
+	},
+	"dependencies": {
+		"@fastify/cors": "^11.1.0",
+		"@fastify/swagger": "^9.5.2",
+		"@fastify/swagger-ui": "^5.2.3",
+		"fastify": "^5.6.1",
+		"fastify-type-provider-zod": "^6.0.0",
+		"zod": "^4.1.12"
+	}
+}
