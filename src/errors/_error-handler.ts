@@ -3,6 +3,7 @@ import { ZodError } from "zod";
 import { BadRequestError } from "./bad-request-error.ts";
 import { ForbiddenError } from "./forbidden-error.ts";
 import { NotFoundError } from "./not-found-error.ts";
+import { SpotifyFetchError } from "./spotify-fetch-error.ts";
 import { UnauthorizedError } from "./unauthorized-error.ts";
 
 type fastifyErrorHandler = FastifyInstance["errorHandler"];
@@ -29,6 +30,10 @@ export const errorHandler: fastifyErrorHandler = (error, _request, reply) => {
 
   if (error instanceof NotFoundError) {
     return reply.status(404).send({ message: error.message });
+  }
+
+  if (error instanceof SpotifyFetchError) {
+    return reply.status(502).send({ message: error.message });
   }
 
   return reply.status(500).send({ message: "Internal server error." });
