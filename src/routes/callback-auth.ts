@@ -1,6 +1,7 @@
 import type { FastifyInstance } from "fastify";
 import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import { z } from "zod";
+import { BadRequestError } from "../errors/bad-request-error.ts";
 import { exchangeCodeForToken } from "../service/auth-service.ts";
 
 export function callbackAuth(app: FastifyInstance) {
@@ -17,7 +18,7 @@ export function callbackAuth(app: FastifyInstance) {
     async (request, reply) => {
       const { code } = request.query;
       if (!code) {
-        throw new Error("Validação do spotify não localizada");
+        throw new BadRequestError("Validação do spotify não localizada");
       }
 
       try {
@@ -28,7 +29,7 @@ export function callbackAuth(app: FastifyInstance) {
         );
         return reply.status(201).send({ token });
       } catch {
-        throw new Error("Falha na autenticação com Spotify");
+        throw new BadRequestError("Falha na autenticação com Spotify");
       }
     }
   );

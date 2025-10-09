@@ -10,6 +10,7 @@ import {
   type ZodTypeProvider,
 } from "fastify-type-provider-zod";
 import { env } from "./env.ts";
+import { errorHandler } from "./error-handler.ts";
 import { connectRedis } from "./lib/redis.ts";
 import { appRoutes } from "./routes/app-routes.ts";
 
@@ -24,6 +25,8 @@ app.register(fastifyCors, {
 
 app.setSerializerCompiler(serializerCompiler);
 app.setValidatorCompiler(validatorCompiler);
+
+app.setErrorHandler(errorHandler);
 
 app.register(fastifySwagger, {
   openapi: {
