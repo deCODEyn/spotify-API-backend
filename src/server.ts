@@ -1,44 +1,50 @@
 import fastifyCors from "@fastify/cors";
+import fastifyJwt from "@fastify/jwt";
 import fastifySwagger from "@fastify/swagger";
 import fastifySwaggerUi from "@fastify/swagger-ui";
 import fastify from "fastify";
 import {
-	jsonSchemaTransform,
-	serializerCompiler,
-	validatorCompiler,
-	type ZodTypeProvider,
+  jsonSchemaTransform,
+  serializerCompiler,
+  validatorCompiler,
+  type ZodTypeProvider,
 } from "fastify-type-provider-zod";
 import { env } from "./env.ts";
+import { connectRedis } from "./lib/redis.ts";
 import { appRoutes } from "./routes/app-routes.ts";
 
 const port = env.PORT;
 const app = fastify({ logger: true }).withTypeProvider<ZodTypeProvider>();
 
+app.register(fastifyJwt, { secret: env.JWT_SECRET });
+
 app.register(fastifyCors, {
-	origin: ["https://localhost:5173", "https://127.0.0.1:5173"],
+  origin: ["https://localhost:5173", "https://127.0.0.1:5173"],
 });
 
 app.setSerializerCompiler(serializerCompiler);
 app.setValidatorCompiler(validatorCompiler);
 
 app.register(fastifySwagger, {
-	openapi: {
-		info: {
-			title: "Spotify API",
-			description:
-				"Integração com API do spotify para controle de artistas e playlists.",
-			version: "1.0.0",
-		},
-		servers: [],
-		components: {
-			securitySchemes: {
-				bearerAuth: { type: "http", scheme: "bearer", bearerFormat: "JWT" },
-			},
-		},
-	},
-	transform: jsonSchemaTransform,
+  openapi: {
+    info: {
+      title: "Spotify API",
+      description:
+        "Integração com API do spotify para controle de artistas e playlists.",
+      version: "1.0.0",
+    },
+    servers: [],
+    components: {
+      securitySchemes: {
+        bearerAuth: { type: "http", scheme: "bearer", bearerFormat: "JWT" },
+      },
+    },
+  },
+  transform: jsonSchemaTransform,
 });
 app.register(fastifySwaggerUi, { routePrefix: "/api/docs" });
+
+await connectRedis(app);
 
 appRoutes(app);
 

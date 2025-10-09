@@ -1,10 +1,14 @@
 import { z } from "zod";
 
 const envSchema = z.object({
-	PORT: z.coerce.number().default(3333),
-	SPOTIFY_CLIENT_ID: z.string(),
-	SPOTIFY_REDIRECT_URI: z.string(),
-	SPOTIFY_CLIENT_SECRET: z.string(),
+  PORT: z.coerce.number().default(3333),
+  SPOTIFY_CLIENT_ID: z.string(),
+  SPOTIFY_REDIRECT_URI: z.string(),
+  SPOTIFY_CLIENT_SECRET: z.string(),
+  REDIS_HOST: z.string(),
+  REDIS_PORT: z.coerce.number().default(6379),
+  REDIS_PASSWORD: z.string(),
+  JWT_SECRET: z.string(),
 });
 
 export const env = envSchema.parse(process.env);
