@@ -9,10 +9,10 @@ import {
 	type ZodTypeProvider,
 } from "fastify-type-provider-zod";
 import { env } from "./env.ts";
-import { helthCheck } from "./routes/health.ts";
+import { appRoutes } from "./routes/app-routes.ts";
 
 const port = env.PORT;
-const app = fastify().withTypeProvider<ZodTypeProvider>();
+const app = fastify({ logger: true }).withTypeProvider<ZodTypeProvider>();
 
 app.register(fastifyCors, {
 	origin: ["https://localhost:5173", "https://127.0.0.1:5173"],
@@ -26,7 +26,7 @@ app.register(fastifySwagger, {
 		info: {
 			title: "Spotify API",
 			description:
-				"App para conexão a API do spotify com controle de artistas e playlists.",
+				"Integração com API do spotify para controle de artistas e playlists.",
 			version: "1.0.0",
 		},
 		servers: [],
@@ -40,7 +40,7 @@ app.register(fastifySwagger, {
 });
 app.register(fastifySwaggerUi, { routePrefix: "/api/docs" });
 
-app.register(helthCheck);
+appRoutes(app);
 
 app.listen({ port, host: "0.0.0.0" });
-console.log("Server listen in port:", port);
+app.log.info(`Server listen in port: ${port}`);

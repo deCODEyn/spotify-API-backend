@@ -2,16 +2,14 @@ import type { FastifyInstance } from "fastify";
 import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import { z } from "zod";
 
-export async function helthCheck(app: FastifyInstance) {
+export async function healthCheck(app: FastifyInstance) {
 	app.withTypeProvider<ZodTypeProvider>().get(
-		"/api/health",
+		"/health",
 		{
 			schema: {
-				summary: "Health check",
+				summary: "Rota para verificação de status da API.",
 				tags: ["Healh Check"],
-				response: {
-					200: z.string(),
-				},
+				response: { 200: z.string() },
 			},
 		},
 		async () => {
