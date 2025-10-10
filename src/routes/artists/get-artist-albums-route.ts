@@ -1,7 +1,7 @@
 import type { FastifyInstance } from "fastify";
 import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import { z } from "zod";
-import { UnauthorizedError } from "../../errors/unauthorized-error.ts";
+import { SpotifyFetchError } from "../../errors/spotify-fetch-error.ts";
 import { getUserId } from "../../middleware/get-user-id.ts";
 import { getArtistAlbums } from "../../service/albums-service.ts";
 
@@ -51,7 +51,7 @@ export function getArtistAlbumsRoute(app: FastifyInstance) {
           return reply.status(200).send(data);
         } catch (error) {
           app.log.error({ err: error }, "Falha ao buscar álbuns do artista.");
-          throw new UnauthorizedError("Falha ao buscar álbuns do artista.");
+          throw new SpotifyFetchError("Falha ao buscar álbuns do artista.");
         }
       }
     );
