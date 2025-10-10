@@ -3,7 +3,7 @@ import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import { z } from "zod";
 import { SpotifyFetchError } from "../../errors/spotify-fetch-error.ts";
 import { getUserId } from "../../middleware/get-user-id.ts";
-import { getTopArtists } from "../../service/get-top-artists-service.ts";
+import { getTopArtists } from "../../service/artists-service.ts";
 
 export function getTopArtistsRoute(app: FastifyInstance) {
   app

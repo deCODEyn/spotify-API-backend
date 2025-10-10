@@ -1,4 +1,4 @@
-import { TOKEN_PREFIX } from "../constants/index.ts";
+import { CACHE_TTL_SECONDS, TOKEN_PREFIX } from "../constants/index.ts";
 import { UnauthorizedError } from "../errors/unauthorized-error.ts";
 import { redis } from "../lib/redis.ts";
 import {
@@ -76,7 +76,7 @@ export async function getTopArtists(userId: string) {
   }
 
   const artists = await fetchArtistsWithRefresh(userId);
-  await redis.setex(cacheKey, 60, JSON.stringify(artists));
+  await redis.setex(cacheKey, CACHE_TTL_SECONDS, JSON.stringify(artists));
 
   return artists;
 }

@@ -21,3 +21,32 @@ export const simplifiedArtistSchema = z.object({
 });
 
 export type SimplifiedArtist = z.infer<typeof simplifiedArtistSchema>;
+
+export const simplifiedAlbumSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  imageUrl: z.string().nullable(),
+  totalTracks: z.number(),
+  releaseDate: z.string(),
+});
+
+export const spotifyAlbumsResponseSchema = z.object({
+  items: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      images: z
+        .array(z.object({ url: z.string() }))
+        .default([])
+        .optional(),
+      total_tracks: z.number(),
+      release_date: z.string(),
+    })
+  ),
+  total: z.number(),
+  limit: z.number().optional(),
+  offset: z.number().optional(),
+  href: z.string().optional(),
+  next: z.string().nullable().optional(),
+  previous: z.string().nullable().optional(),
+});
