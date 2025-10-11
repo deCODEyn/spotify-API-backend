@@ -6,6 +6,7 @@ import { callbackRoute } from "./auth/callback-route.ts";
 import { getMeRoute } from "./auth/get-me-route.ts";
 import { refreshRoute } from "./auth/refresh-route.ts";
 import { healthCheck } from "./health.ts";
+import { getUserPlaylistsRoute } from "./playlists/get-user-playlists-route.ts";
 
 export function appRoutes(app: FastifyInstance) {
   app.register(
@@ -18,6 +19,8 @@ export function appRoutes(app: FastifyInstance) {
 
       routes.register(getTopArtistsRoute);
       routes.register(getArtistAlbumsRoute);
+
+      routes.register(getUserPlaylistsRoute);
     },
     { prefix: "/api" }
   );

@@ -4,7 +4,7 @@ import { redis } from "../lib/redis.ts";
 import {
   simplifiedAlbumSchema,
   spotifyAlbumsResponseSchema,
-} from "../schemas/artists-schema.ts";
+} from "../schemas/artists-schemas.ts";
 
 import { tokenSchema } from "../schemas/auth-schemas.ts";
 import { refreshSpotifyToken } from "./auth-service.ts";

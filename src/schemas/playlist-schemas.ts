@@ -1,0 +1,23 @@
+import { z } from "zod";
+
+export const spotifyPlaylistsResponseSchema = z.object({
+  items: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      description: z.string().nullable(),
+      images: z.array(z.object({ url: z.string() })).default([]),
+      tracks: z.object({ total: z.number() }),
+    })
+  ),
+});
+
+export const simplifiedPlaylistSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string().nullable(),
+  imageUrl: z.string().nullable(),
+  tracks: z.number(),
+});
+
+export type SimplifiedPlaylist = z.infer<typeof simplifiedPlaylistSchema>;

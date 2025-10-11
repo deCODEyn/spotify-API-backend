@@ -3,6 +3,7 @@ import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import { z } from "zod";
 import { SpotifyFetchError } from "../../errors/spotify-fetch-error.ts";
 import { getUserId } from "../../middleware/get-user-id.ts";
+import { getUserPlaylists } from "../../service/playlist-service.ts";
 
 export function getUserPlaylistsRoute(app: FastifyInstance) {
   app
@@ -16,18 +17,25 @@ export function getUserPlaylistsRoute(app: FastifyInstance) {
           tags: ["Playlists"],
           security: [{ bearerAuth: [] }],
           response: {
-            200: {},
+            200: z.array(
+              z.object({
+                id: z.string(),
+                name: z.string(),
+                description: z.string().nullable(),
+                imageUrl: z.string().nullable(),
+                totalTracks: z.number(),
+              })
+            ),
             401: z.object({ message: z.string() }),
           },
         },
       },
-      (request, reply) => {
+      async (request, reply) => {
         try {
           const userId = request.userId;
-          const playlists =
-            "implementar no service await getUserPlaylists(userId)";
+          const playlists = await getUserPlaylists(userId);
 
-          return reply.status(200).send();
+          return reply.status(200).send(playlists);
         } catch (error) {
           app.log.error(
             { err: error },
