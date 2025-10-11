@@ -6,8 +6,15 @@ export const spotifyPlaylistsResponseSchema = z.object({
       id: z.string(),
       name: z.string(),
       description: z.string().nullable(),
-      images: z.array(z.object({ url: z.string() })).default([]),
-      tracks: z.object({ total: z.number() }),
+      images: z
+        .array(z.object({ url: z.string() }))
+        .nullable()
+        .transform((val) => val ?? []),
+      tracks: z
+        .object({ total: z.number() })
+        .nullable()
+        .optional()
+        .transform((val) => ({ total: val?.total ?? 0 })),
     })
   ),
 });

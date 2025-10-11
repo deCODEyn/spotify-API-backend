@@ -46,9 +46,11 @@ export function getArtistAlbumsRoute(app: FastifyInstance) {
           const artistId = request.params.artistId;
           const limit = Number(request.query.limit) || 20;
           const offset = Number(request.query.offset) || 0;
-
           const data = await getArtistAlbums(userId, artistId, limit, offset);
-          return reply.status(200).send(data);
+
+          return reply
+            .status(200)
+            .send({ albums: data.albums, total: data.total, limit, offset });
         } catch (error) {
           app.log.error({ err: error }, "Falha ao buscar álbuns do artista.");
           throw new SpotifyFetchError("Falha ao buscar álbuns do artista.");

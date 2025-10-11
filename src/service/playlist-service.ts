@@ -3,6 +3,7 @@ import { UnauthorizedError } from "../errors/unauthorized-error.ts";
 import { redis } from "../lib/redis.ts";
 import { tokenSchema } from "../schemas/auth-schemas.ts";
 import {
+  type SimplifiedPlaylist,
   simplifiedPlaylistSchema,
   spotifyPlaylistsResponseSchema,
 } from "../schemas/playlist-schemas.ts";
@@ -58,7 +59,7 @@ export async function fetchPlaylistsWithRefresh(userId: string) {
       name: playlist.name,
       description: playlist.description || null,
       imageUrl: playlist.images?.[0]?.url ?? null,
-      totalTracks: playlist.tracks.total,
+      tracks: playlist.tracks.total,
     })
   );
 
@@ -68,7 +69,9 @@ export async function fetchPlaylistsWithRefresh(userId: string) {
 /**
  * Main function. Aplicação de cache.
  */
-export async function getUserPlaylists(userId: string) {
+export async function getUserPlaylists(
+  userId: string
+): Promise<SimplifiedPlaylist[]> {
   const cacheKey = `${TOKEN_PREFIX}${userId}:playlists`;
   const cached = await redis.get(cacheKey);
 

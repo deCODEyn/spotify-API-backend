@@ -30,6 +30,7 @@ export function getMeRoute(app: FastifyInstance) {
         try {
           const userId = request.userId;
           const user = await getUserFromRedis(userId);
+
           return reply.status(200).send(user);
         } catch (error) {
           app.log.error(

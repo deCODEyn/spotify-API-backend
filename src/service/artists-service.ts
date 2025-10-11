@@ -2,6 +2,7 @@ import { CACHE_TTL_SECONDS, TOKEN_PREFIX } from "../constants/index.ts";
 import { UnauthorizedError } from "../errors/unauthorized-error.ts";
 import { redis } from "../lib/redis.ts";
 import {
+  type SimplifiedArtist,
   simplifiedArtistSchema,
   spotifyTopArtistsResponseSchema,
 } from "../schemas/artists-schemas.ts";
@@ -67,7 +68,9 @@ export async function fetchArtistsWithRefresh(userId: string) {
 /**
  * Main function. Aplicação de cache.
  */
-export async function getTopArtists(userId: string) {
+export async function getTopArtists(
+  userId: string
+): Promise<SimplifiedArtist[]> {
   const cacheKey = `${TOKEN_PREFIX}${userId}:top-artists`;
   const cached = await redis.get(cacheKey);
 

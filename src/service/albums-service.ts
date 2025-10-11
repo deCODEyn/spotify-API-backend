@@ -2,6 +2,7 @@ import { CACHE_TTL_SECONDS, TOKEN_PREFIX } from "../constants/index.ts";
 import { UnauthorizedError } from "../errors/unauthorized-error.ts";
 import { redis } from "../lib/redis.ts";
 import {
+  type SimplifiedAlbum,
   simplifiedAlbumSchema,
   spotifyAlbumsResponseSchema,
 } from "../schemas/artists-schemas.ts";
@@ -76,7 +77,7 @@ export async function fetchAlbumsWithRefresh(
     })
   );
 
-  return { albums, total: parsed.total, offset, limit };
+  return { albums, total: parsed.total };
 }
 
 /**
@@ -87,7 +88,7 @@ export async function getArtistAlbums(
   artistId: string,
   limit = 20,
   offset = 0
-) {
+): Promise<{ albums: SimplifiedAlbum[]; total: number }> {
   const cacheKey = `${TOKEN_PREFIX}${userId}:artist:${artistId}:albums:limit${limit}:offset${offset}`;
   const cached = await redis.get(cacheKey);
 

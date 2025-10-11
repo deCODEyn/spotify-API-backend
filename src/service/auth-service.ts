@@ -85,6 +85,7 @@ export async function getUserFromRedis(userId: string) {
     throw new UnauthorizedError("Usuário não localizado.");
   }
   const parsed = JSON.parse(data);
+
   return userSchema.parse(parsed);
 }
 

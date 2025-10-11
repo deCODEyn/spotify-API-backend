@@ -4,7 +4,10 @@ const spotifyArtistSchema = z.object({
   id: z.string(),
   name: z.string(),
   genres: z.array(z.string()).default([]),
-  images: z.array(z.object({ url: z.string() })).default([]),
+  images: z
+    .array(z.object({ url: z.string() }))
+    .nullable()
+    .transform((val) => val ?? []),
   followers: z.object({ total: z.number() }),
 });
 
@@ -27,7 +30,10 @@ export const spotifyAlbumsResponseSchema = z.object({
     z.object({
       id: z.string(),
       name: z.string(),
-      images: z.array(z.object({ url: z.string() })).default([]),
+      images: z
+        .array(z.object({ url: z.string() }))
+        .nullable()
+        .transform((val) => val ?? []),
       total_tracks: z.number(),
       release_date: z.string(),
     })

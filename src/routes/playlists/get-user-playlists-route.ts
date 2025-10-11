@@ -23,7 +23,7 @@ export function getUserPlaylistsRoute(app: FastifyInstance) {
                 name: z.string(),
                 description: z.string().nullable(),
                 imageUrl: z.string().nullable(),
-                totalTracks: z.number(),
+                tracks: z.number(),
               })
             ),
             401: z.object({ message: z.string() }),
