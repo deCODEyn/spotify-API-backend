@@ -12,7 +12,7 @@ import { withSpotifyAuthRetry } from "../utils/with-spotify-auth-retry.ts";
 /**
  * Faz a requisição para buscar playlists do usuário no Spotify.
  */
-async function fetchPlaylists(token: string) {
+export async function fetchPlaylists(token: string) {
   const response = await fetch("https://api.spotify.com/v1/me/playlists", {
     headers: { Authorization: `Bearer ${token}` },
   });
@@ -65,7 +65,7 @@ export async function getUserPlaylists(
 /**
  * Faz a requisição para criar uma nova playlist.
  */
-async function fetchCreatePlaylist(
+export async function fetchCreatePlaylist(
   token: string,
   userId: string,
   body: CreatePlaylistBody

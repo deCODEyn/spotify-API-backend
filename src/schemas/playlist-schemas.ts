@@ -30,7 +30,7 @@ export const simplifiedPlaylistSchema = z.object({
 export type SimplifiedPlaylist = z.infer<typeof simplifiedPlaylistSchema>;
 
 export const createPlaylistBodySchema = z.object({
-  name: z.string(),
+  name: z.string().min(1, "Name não pode ser vazio"),
   description: z.string().optional(),
   public: z.boolean().optional(),
 });

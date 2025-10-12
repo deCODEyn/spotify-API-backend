@@ -51,7 +51,7 @@ describe("Albums Service", () => {
       expect(response).toBe(fakeResponse);
     });
 
-    it("retorna erro caso fetch rejeite (Spotify fora)", async () => {
+    it("deve retornar erro caso fetch rejeite (Spotify fora)", async () => {
       mockFetch.mockRejectedValue(new Error("Spotify down"));
 
       await expect(
