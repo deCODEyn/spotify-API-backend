@@ -3,6 +3,7 @@ import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import { z } from "zod";
 import { UnauthorizedError } from "../../errors/unauthorized-error.ts";
 import { getUserId } from "../../middleware/get-user-id.ts";
+import { userSchema } from "../../schemas/auth-schemas.ts";
 import { getUserFromRedis } from "../../service/auth-service.ts";
 
 export function getMeRoute(app: FastifyInstance) {
@@ -17,11 +18,7 @@ export function getMeRoute(app: FastifyInstance) {
           tags: ["Auth"],
           security: [{ bearerAuth: [] }],
           response: {
-            200: z.object({
-              id: z.string(),
-              display_name: z.string().nullable().optional(),
-              email: z.email().nullable().optional(),
-            }),
+            200: userSchema,
             401: z.object({ message: z.string() }),
           },
         },

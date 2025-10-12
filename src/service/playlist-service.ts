@@ -3,6 +3,8 @@ import { UnauthorizedError } from "../errors/unauthorized-error.ts";
 import { redis } from "../lib/redis.ts";
 import { tokenSchema } from "../schemas/auth-schemas.ts";
 import {
+  type CreatePlaylistBody,
+  createPlaylistBodySchema,
   type SimplifiedPlaylist,
   simplifiedPlaylistSchema,
   spotifyPlaylistsResponseSchema,
@@ -83,4 +85,70 @@ export async function getUserPlaylists(
   await redis.setex(cacheKey, CACHE_TTL_SECONDS, JSON.stringify(playlists));
 
   return playlists;
+}
+
+/**
+ * Faz a requisição para criar uma nova playlist.
+ */
+async function fetchCreatePlaylist(
+  token: string,
+  userId: string,
+  body: CreatePlaylistBody
+) {
+  const response = await fetch(
+    `https://api.spotify.com/v1/users/${userId}/playlists`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    }
+  );
+  return response;
+}
+
+/**
+ * Criação de nova playlist.
+ */
+export async function createPlaylist(userId: string, body: CreatePlaylistBody) {
+  const parsedBody = createPlaylistBodySchema.parse(body);
+  const tokenData = await redis.get(`${TOKEN_PREFIX}${userId}`);
+
+  if (!tokenData) {
+    throw new UnauthorizedError("Usuário não autenticado.");
+  }
+
+  const { access_token } = tokenSchema.parse(JSON.parse(tokenData));
+  let response = await fetchCreatePlaylist(access_token, userId, parsedBody);
+
+  if (response.status === 401) {
+    await refreshSpotifyToken(userId);
+    const refreshed = await redis.get(`spotify:token:${userId}`);
+
+    if (!refreshed) {
+      throw new UnauthorizedError("Falha ao atualizar token Spotify.");
+    }
+
+    const { access_token: newToken } = tokenSchema.parse(JSON.parse(refreshed));
+    response = await fetchCreatePlaylist(newToken, userId, parsedBody);
+  }
+
+  if (!response.ok) {
+    throw new Error("Falha ao criar playlist no Spotify.");
+  }
+
+  const json = await response.json();
+  const parsed = spotifyPlaylistsResponseSchema.parse({ items: [json] });
+
+  const playlist = simplifiedPlaylistSchema.parse({
+    id: parsed.items[0].id,
+    name: parsed.items[0].name,
+    description: parsed.items[0].description ?? null,
+    imageUrl: parsed.items[0].images[0]?.url ?? null,
+    tracks: parsed.items[0].tracks.total ?? 0,
+  });
+
+  return playlist;
 }

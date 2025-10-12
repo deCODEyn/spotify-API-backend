@@ -3,6 +3,7 @@ import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import { z } from "zod";
 import { SpotifyFetchError } from "../../errors/spotify-fetch-error.ts";
 import { getUserId } from "../../middleware/get-user-id.ts";
+import { simplifiedPlaylistSchema } from "../../schemas/playlist-schemas.ts";
 import { getUserPlaylists } from "../../service/playlist-service.ts";
 
 export function getUserPlaylistsRoute(app: FastifyInstance) {
@@ -17,15 +18,7 @@ export function getUserPlaylistsRoute(app: FastifyInstance) {
           tags: ["Playlists"],
           security: [{ bearerAuth: [] }],
           response: {
-            200: z.array(
-              z.object({
-                id: z.string(),
-                name: z.string(),
-                description: z.string().nullable(),
-                imageUrl: z.string().nullable(),
-                tracks: z.number(),
-              })
-            ),
+            200: z.array(simplifiedPlaylistSchema),
             401: z.object({ message: z.string() }),
           },
         },

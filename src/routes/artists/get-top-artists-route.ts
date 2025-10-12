@@ -3,6 +3,7 @@ import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import { z } from "zod";
 import { SpotifyFetchError } from "../../errors/spotify-fetch-error.ts";
 import { getUserId } from "../../middleware/get-user-id.ts";
+import { simplifiedArtistSchema } from "../../schemas/artists-schemas.ts";
 import { getTopArtists } from "../../service/artists-service.ts";
 
 export function getTopArtistsRoute(app: FastifyInstance) {
@@ -17,15 +18,7 @@ export function getTopArtistsRoute(app: FastifyInstance) {
           tags: ["Artists"],
           security: [{ bearerAuth: [] }],
           response: {
-            200: z.array(
-              z.object({
-                id: z.string(),
-                name: z.string(),
-                genres: z.array(z.string()),
-                imageUrl: z.string().nullable(),
-                followers: z.number(),
-              })
-            ),
+            200: z.array(simplifiedArtistSchema),
             401: z.object({ message: z.string() }),
           },
         },

@@ -28,3 +28,11 @@ export const simplifiedPlaylistSchema = z.object({
 });
 
 export type SimplifiedPlaylist = z.infer<typeof simplifiedPlaylistSchema>;
+
+export const createPlaylistBodySchema = z.object({
+  name: z.string(),
+  description: z.string().optional(),
+  public: z.boolean().optional(),
+});
+
+export type CreatePlaylistBody = z.infer<typeof createPlaylistBodySchema>;
