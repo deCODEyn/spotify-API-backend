@@ -9,8 +9,6 @@ jest.mock("../env.ts", () => ({
   },
 }));
 
-jest.mock("../lib/redis.ts", () => ({ redis: { get: jest.fn() } }));
-
-jest.mock("../service/auth-service.ts", () => ({
-  refreshSpotifyToken: jest.fn(),
+jest.mock("../lib/redis.ts", () => ({
+  redis: { get: jest.fn(), setex: jest.fn() },
 }));

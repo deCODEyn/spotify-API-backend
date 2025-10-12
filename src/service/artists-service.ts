@@ -10,7 +10,7 @@ import { withSpotifyAuthRetry } from "../utils/with-spotify-auth-retry.ts";
 /**
  * Busca os top artistas do usuário autenticado no Spotify.
  */
-async function fetchArtists(token: string) {
+export async function fetchArtists(token: string) {
   const response = await fetch("https://api.spotify.com/v1/me/top/artists", {
     headers: { Authorization: `Bearer ${token}` },
   });

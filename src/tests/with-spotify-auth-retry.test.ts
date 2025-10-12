@@ -4,6 +4,10 @@ import { redis } from "../lib/redis.ts";
 import { refreshSpotifyToken } from "../service/auth-service.ts";
 import { withSpotifyAuthRetry } from "../utils/with-spotify-auth-retry.ts";
 
+jest.mock("../service/auth-service.ts", () => ({
+  refreshSpotifyToken: jest.fn(),
+}));
+
 describe("withSpotifyAuthRetry", () => {
   const USER_ID = "user123";
   const ACCESS_TOKEN = "valid-token";
@@ -32,6 +36,7 @@ describe("withSpotifyAuthRetry", () => {
     it("deve lançar UnauthorizedError se o token não existir no cache", async () => {
       (redis.get as jest.Mock).mockResolvedValue(null);
       const fetchFn = jest.fn();
+
       await expect(withSpotifyAuthRetry(USER_ID, fetchFn)).rejects.toThrow(
         UnauthorizedError
       );
@@ -106,6 +111,7 @@ describe("withSpotifyAuthRetry", () => {
       const invalidToken = JSON.stringify({ token: "wrong-key" });
       (redis.get as jest.Mock).mockResolvedValue(invalidToken);
       const fetchFn = jest.fn();
+
       await expect(withSpotifyAuthRetry(USER_ID, fetchFn)).rejects.toThrow();
     });
   });
