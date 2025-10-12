@@ -10,5 +10,5 @@ jest.mock("../env.ts", () => ({
 }));
 
 jest.mock("../lib/redis.ts", () => ({
-  redis: { get: jest.fn(), setex: jest.fn() },
+  redis: { get: jest.fn(), setex: jest.fn(), set: jest.fn() },
 }));
