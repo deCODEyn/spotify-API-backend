@@ -1,7 +1,5 @@
 import { CACHE_TTL_SECONDS, TOKEN_PREFIX } from "../constants/index.ts";
-import { UnauthorizedError } from "../errors/unauthorized-error.ts";
 import { redis } from "../lib/redis.ts";
-import { tokenSchema } from "../schemas/auth-schemas.ts";
 import {
   type CreatePlaylistBody,
   createPlaylistBodySchema,
@@ -9,8 +7,7 @@ import {
   simplifiedPlaylistSchema,
   spotifyPlaylistsResponseSchema,
 } from "../schemas/playlist-schemas.ts";
-
-import { refreshSpotifyToken } from "./auth-service.ts";
+import { withSpotifyAuthRetry } from "../utils/with-spotify-auth-retry.ts";
 
 /**
  * Faz a requisição para buscar playlists do usuário no Spotify.
@@ -26,34 +23,12 @@ async function fetchPlaylists(token: string) {
  * Faz a validação e refresh token para chamada da API.
  */
 export async function fetchPlaylistsWithRefresh(userId: string) {
-  const data = await redis.get(`${TOKEN_PREFIX}${userId}`);
+  const response = await withSpotifyAuthRetry(userId, (token) =>
+    fetchPlaylists(token)
+  );
 
-  if (!data) {
-    throw new UnauthorizedError("Usuário não autenticado ou token expirado.");
-  }
-
-  const { access_token } = tokenSchema.parse(JSON.parse(data));
-  let response = await fetchPlaylists(access_token);
-
-  // Se o token expirou, tenta refresh
-  if (response.status === 401) {
-    await refreshSpotifyToken(userId);
-    const refreshed = await redis.get(`${TOKEN_PREFIX}${userId}`);
-
-    if (!refreshed) {
-      throw new UnauthorizedError("Falha ao atualizar token Spotify.");
-    }
-
-    const { access_token: newToken } = tokenSchema.parse(JSON.parse(refreshed));
-    response = await fetchPlaylists(newToken);
-  }
-
-  if (!response.ok) {
-    throw new UnauthorizedError("Erro ao buscar playlists no Spotify.");
-  }
-
-  const json = await response.json();
-  const parsed = spotifyPlaylistsResponseSchema.parse(json);
+  const data = await response.json();
+  const parsed = spotifyPlaylistsResponseSchema.parse(data);
 
   const playlists = parsed.items.map((playlist) =>
     simplifiedPlaylistSchema.parse({
@@ -114,33 +89,12 @@ async function fetchCreatePlaylist(
  */
 export async function createPlaylist(userId: string, body: CreatePlaylistBody) {
   const parsedBody = createPlaylistBodySchema.parse(body);
-  const tokenData = await redis.get(`${TOKEN_PREFIX}${userId}`);
+  const response = await withSpotifyAuthRetry(userId, (token) =>
+    fetchCreatePlaylist(token, userId, parsedBody)
+  );
 
-  if (!tokenData) {
-    throw new UnauthorizedError("Usuário não autenticado.");
-  }
-
-  const { access_token } = tokenSchema.parse(JSON.parse(tokenData));
-  let response = await fetchCreatePlaylist(access_token, userId, parsedBody);
-
-  if (response.status === 401) {
-    await refreshSpotifyToken(userId);
-    const refreshed = await redis.get(`spotify:token:${userId}`);
-
-    if (!refreshed) {
-      throw new UnauthorizedError("Falha ao atualizar token Spotify.");
-    }
-
-    const { access_token: newToken } = tokenSchema.parse(JSON.parse(refreshed));
-    response = await fetchCreatePlaylist(newToken, userId, parsedBody);
-  }
-
-  if (!response.ok) {
-    throw new Error("Falha ao criar playlist no Spotify.");
-  }
-
-  const json = await response.json();
-  const parsed = spotifyPlaylistsResponseSchema.parse({ items: [json] });
+  const data = await response.json();
+  const parsed = spotifyPlaylistsResponseSchema.parse({ items: [data] });
 
   const playlist = simplifiedPlaylistSchema.parse({
     id: parsed.items[0].id,
