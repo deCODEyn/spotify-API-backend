@@ -12,7 +12,8 @@
     "skipLibCheck": true,
     "moduleResolution": "node16",
     "strictNullChecks": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "types": ["node", "jest"]
   },
   "include": ["src"]
 }

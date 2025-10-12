@@ -7,5 +7,17 @@
         "noMagicNumbers": "off"
       }
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": ["src/tests/**/*.ts"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noUndeclaredVariables": "off"
+          }
+        }
+      }
+    }
+  ]
 }

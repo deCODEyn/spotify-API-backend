@@ -6,11 +6,15 @@
   "scripts": {
     "dev": "node --watch --loader tsconfig-paths/register.js --experimental-strip-types --no-warnings --env-file .env src/server.ts",
     "start": "node --no-warnings dist/server.js",
-    "build": "tsc --build"
+    "build": "tsc --build",
+    "test": "jest"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.2.5",
+    "@types/jest": "^30.0.0",
     "@types/node": "^24.7.0",
+    "jest": "^30.2.0",
+    "ts-jest": "^29.4.5",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.3",
     "ultracite": "^5.6.1"

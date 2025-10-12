@@ -90,7 +90,7 @@ export async function getUserFromRedis(userId: string) {
 }
 
 /**
- * Refresha o token do usuário e atualiza o Redis.
+ * Refresh token do usuário e atualiza o Redis.
  */
 export async function refreshSpotifyToken(userId: string) {
   const data = await redis.get(`${TOKEN_PREFIX}${userId}`);
