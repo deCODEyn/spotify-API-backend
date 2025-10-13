@@ -13,6 +13,8 @@ import { authRoute } from "../../routes/auth/auth-route.ts";
 import { callbackRoute } from "../../routes/auth/callback-route.ts";
 import { getMeRoute } from "../../routes/auth/get-me-route.ts";
 import { refreshRoute } from "../../routes/auth/refresh-route.ts";
+import { createPlaylistRoute } from "../../routes/playlists/create-playlist-route.ts";
+import { getUserPlaylistsRoute } from "../../routes/playlists/get-user-playlists-route.ts";
 
 export async function buildTestServer() {
   const app = fastify({ logger: false }).withTypeProvider<ZodTypeProvider>();
@@ -32,6 +34,9 @@ export async function buildTestServer() {
 
       routes.register(getTopArtistsRoute);
       routes.register(getArtistAlbumsRoute);
+
+      routes.register(createPlaylistRoute);
+      routes.register(getUserPlaylistsRoute);
     },
     { prefix: "/api" }
   );
