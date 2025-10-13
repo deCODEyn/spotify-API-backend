@@ -3,7 +3,7 @@ export default {
   testEnvironment: "node",
   roots: ["<rootDir>/src/tests"],
   moduleNameMapper: {
-    "^(.*)\\.js$": "$1",
+    "^(\\.{1,2}/.*)\\.js$": "$1",
   },
   extensionsToTreatAsEsm: [".ts"],
   setupFiles: ["<rootDir>/src/tests/jest.setup.ts"],

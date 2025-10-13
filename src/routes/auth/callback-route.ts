@@ -1,7 +1,6 @@
 import type { FastifyInstance } from "fastify";
 import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import { z } from "zod";
-
 import { BadRequestError } from "../../errors/bad-request-error.ts";
 import { UnauthorizedError } from "../../errors/unauthorized-error.ts";
 import {

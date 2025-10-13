@@ -16,6 +16,13 @@ export const errorHandler: fastifyErrorHandler = (error, _request, reply) => {
     });
   }
 
+  if (error?.validation) {
+    return reply.status(400).send({
+      message: "Validation error",
+      errors: error.validation,
+    });
+  }
+
   if (error instanceof BadRequestError) {
     return reply.status(400).send({ message: error.message });
   }

@@ -25,7 +25,6 @@ export function refreshRoute(app: FastifyInstance) {
       async (request, reply) => {
         try {
           const userId = request.userId;
-
           await refreshSpotifyToken(userId);
 
           const jwtToken = await reply.jwtSign(
