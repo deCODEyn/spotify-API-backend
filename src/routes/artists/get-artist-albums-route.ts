@@ -29,7 +29,7 @@ export function getArtistAlbumsRoute(app: FastifyInstance) {
               limit: z.number(),
               offset: z.number(),
             }),
-            401: z.object({ message: z.string() }),
+            502: z.object({ message: z.string() }),
           },
         },
       },

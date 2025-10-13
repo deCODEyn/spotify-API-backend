@@ -19,7 +19,7 @@ export function getTopArtistsRoute(app: FastifyInstance) {
           security: [{ bearerAuth: [] }],
           response: {
             200: z.array(simplifiedArtistSchema),
-            401: z.object({ message: z.string() }),
+            502: z.object({ message: z.string() }),
           },
         },
       },
