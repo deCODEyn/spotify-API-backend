@@ -21,7 +21,7 @@ const app = fastify({ logger: true }).withTypeProvider<ZodTypeProvider>();
 app.register(fastifyJwt, { secret: env.JWT_SECRET });
 
 app.register(fastifyCors, {
-  origin: ["https://localhost:5173", "https://127.0.0.1:5173"],
+  origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
 });
 
 app.setSerializerCompiler(serializerCompiler);
