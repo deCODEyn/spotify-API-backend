@@ -1,4 +1,4 @@
-import { BASIC, TOKEN_PREFIX } from "../constants/index.ts";
+import { BASIC, CACHE_TTL_SECONDS, TOKEN_PREFIX } from "../constants/index.ts";
 import { env } from "../env.ts";
 import { BadRequestError } from "../errors/bad-request-error.ts";
 import { ForbiddenError } from "../errors/forbidden-error.ts";
@@ -10,6 +10,7 @@ import {
   tokenSchema,
   type UserSchema,
   userSchema,
+  userSchemaSpotifyResponse,
 } from "../schemas/auth-schemas.ts";
 
 /**
@@ -52,8 +53,12 @@ export async function getSpotifyUser(accessToken: string) {
   }
 
   const data = await response.json();
+  const user = userSchemaSpotifyResponse.parse(data);
 
-  return userSchema.parse(data);
+  return userSchema.parse({
+    imageUrl: user.images[0]?.url ?? null,
+    ...user,
+  });
 }
 
 /**
@@ -70,7 +75,7 @@ export async function saveTokensAndUser(user: UserSchema, tokens: TokenSchema) {
     `${TOKEN_PREFIX}${user.id}`,
     JSON.stringify(payload),
     "EX",
-    tokens.expires_in + 60
+    tokens.expires_in + CACHE_TTL_SECONDS
   );
 
   return payload;

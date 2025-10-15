@@ -9,10 +9,21 @@ export const tokenSchema = z.object({
 });
 export type TokenSchema = z.infer<typeof tokenSchema>;
 
+export const userSchemaSpotifyResponse = z.object({
+  id: z.string(),
+  display_name: z.string().nullable().optional(),
+  email: z.string().nullable().optional(),
+  images: z
+    .array(z.object({ url: z.string() }))
+    .nullable()
+    .transform((val) => val ?? []),
+});
+
 export const userSchema = z.object({
   id: z.string(),
   display_name: z.string().nullable().optional(),
   email: z.string().nullable().optional(),
+  imageUrl: z.string().nullable(),
 });
 export type UserSchema = z.infer<typeof userSchema>;
 
