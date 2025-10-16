@@ -115,7 +115,7 @@ Uma API robusta e escalável para integração com o Spotify, desenvolvida com N
 
 ```bash
 # Clone o repositório
-git clone <repository-url>
+git clone https://github.com/deCODEyn/spotify-API-backend.git
 cd spotify-API-backend
 
 # Instale as dependências
