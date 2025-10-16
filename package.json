@@ -6,8 +6,12 @@
   "scripts": {
     "dev": "node --watch --loader tsconfig-paths/register.js --experimental-strip-types --no-warnings --env-file .env src/server.ts",
     "start": "node --no-warnings dist/server.js",
-    "build": "tsc --build",
-    "test": "jest"
+    "build": "tsup src/server.ts --out-dir dist --format esm --target es2022",
+    "build:prod": "npm ci --only=production && npm run build",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "lint": "biome check src/",
+    "lint:fix": "biome check --apply src/"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.2.5",
@@ -16,6 +20,7 @@
     "jest": "^30.2.0",
     "ts-jest": "^29.4.5",
     "tsconfig-paths": "^4.2.0",
+    "tsup": "^8.0.2",
     "typescript": "^5.9.3",
     "ultracite": "^5.6.1"
   },

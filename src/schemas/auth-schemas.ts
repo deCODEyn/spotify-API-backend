@@ -23,7 +23,7 @@ export const userSchema = z.object({
   id: z.string(),
   display_name: z.string().nullable().optional(),
   email: z.string().nullable().optional(),
-  imageUrl: z.string().nullable(),
+  imageUrl: z.string().nullable().optional(),
 });
 export type UserSchema = z.infer<typeof userSchema>;
 
