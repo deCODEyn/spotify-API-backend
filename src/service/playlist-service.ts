@@ -104,5 +104,8 @@ export async function createPlaylist(userId: string, body: CreatePlaylistBody) {
     tracks: parsed.items[0].tracks.total ?? 0,
   });
 
+  const cacheKey = `${TOKEN_PREFIX}${userId}:playlists`;
+  await redis.del(cacheKey);
+
   return playlist;
 }
